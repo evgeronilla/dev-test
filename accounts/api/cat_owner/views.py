@@ -1,4 +1,5 @@
 from rest_framework import generics, mixins
+from rest_framework import viewsets
 
 from accounts.models import User
 from accounts.api.permissions import IsOwnerOrReadOnly
@@ -9,25 +10,38 @@ from cats.models import Cat
 from .serializers import CatOwnerPublicSerializer
 
 
-class OwnerAPIListView(generics.ListAPIView):
-    queryset            = User.objects.all()
-    serializer_class    = CatOwnerPublicSerializer
+class OwnerViewSet(viewsets.ModelViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    permission_classes = [IsOwnerOrReadOnly]
+    queryset = User.objects.all()
+    serializer_class = CatOwnerPublicSerializer
+    lookup_field = 'username'
 
 
-class OwnerAPIDetailView(mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.RetrieveAPIView):
-    permission_classes          = [IsOwnerOrReadOnly]
-    serializer_class            = CatOwnerPublicSerializer
-    queryset                    = User.objects.all()
-    lookup_field                = 'username'
+class OwnerCatViewSet(viewsets.ViewSet):
+    """
+    This viewset automatically provides `list` and `detail` actions.
+    """
+    permission_classes = [IsSameCatBreed]
+    serializer_class = CatOwnerPublicSerializer
+    lookup_field = 'name'
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+    def list(self, request, owner_username=None):
+        print(request)
 
-    def patch(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+        auth_user_breed_list = Cat.objects.values('breed').distinct().filter(owner=self.request.user)
 
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+        return Cat.objects.filter(owner__username=owner_username, breed__in=auth_user_breed_list)
+
+    # def get_queryset(self):
+    #     kw_username = self.kwargs['username_username']
+    #     print(kw_username)
+    #
+    #     user = User.objects.get(username=kw_username)
+    #
+    #     return Cat.objects.filter(owner=user)
 
 
 class OwnerCatAPIListView(generics.ListAPIView):

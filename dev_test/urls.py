@@ -15,9 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_nested import routers
+from accounts.api.cat_owner.views import OwnerViewSet, OwnerCatViewSet
+
+router = routers.SimpleRouter()
+router.register(r'api/owners', OwnerViewSet, base_name='owner')
+
+owner_router = routers.NestedSimpleRouter(router, r'api/owners', lookup='username')
+owner_router.register(r'cats', OwnerCatViewSet, base_name='owner_cat')
+# router.register(r'api/owners/(?P<username>[\w_/-]+)/cats', views.OwnerViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('accounts.api.urls')),
-    path('api/owners/', include('accounts.api.cat_owner.urls')),
+    # path('api/owners/', include('accounts.api.cat_owner.urls')),
+    path('', include(router.urls)),
+    path('', include(owner_router.urls)),
 ]
