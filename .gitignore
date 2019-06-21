@@ -11,7 +11,7 @@ pip-selfcheck.json
 
 # Django related
 vendics/settings/local.py
-public/
+# public/media/
 # src/<yourproject>/settings/local.py
 # static-cdn/
 # any collected static files
