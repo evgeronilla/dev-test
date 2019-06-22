@@ -23,7 +23,7 @@ token = r.json()['token']
 
 BASE_ENDPOINT = 'http://127.0.0.1:8000/api/owners/ed/cats/'
 
-ENDPOINT = BASE_ENDPOINT + "admin_cat_3/"
+ENDPOINT = BASE_ENDPOINT + "ed_cat_3/"
 
 
 headers2 = {
@@ -41,12 +41,12 @@ with open(image_path, 'rb') as image:
         'image': image
     }
     # Retrieve
-    r = requests.get(BASE_ENDPOINT, headers=headers2, files=file_data)
-    print(r.text)
+    # r = requests.get(BASE_ENDPOINT, headers=headers2, files=file_data)
+    # print(r.text)
 
     # Update
-    # r = requests.put(ENDPOINT, data=data2, headers=headers2, files=file_data)
-    # print(r.text)
+    r = requests.put(ENDPOINT, data=data2, headers=headers2, files=file_data)
+    print(r.text)
 
     # Create
     # r = requests.post(BASE_ENDPOInT, data=data2, headers=headers2, files=file_data)
