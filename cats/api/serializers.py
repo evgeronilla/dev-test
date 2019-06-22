@@ -49,3 +49,14 @@ class CatDetailSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Name is required.')
 
         return data
+
+    def create(self, validated_data):
+        user_obj = Cat(
+            name=validated_data.get('name'),
+            image=validated_data.get('image'),
+            breed=validated_data.get('breed'),
+            birthdate=validated_data.get('birthdate'),
+        )
+        user_obj.owner = self.context.get("user")
+        user_obj.save()
+        return user_obj
