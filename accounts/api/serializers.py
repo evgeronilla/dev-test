@@ -1,11 +1,12 @@
-from django.conf import settings
 import datetime
-from django.utils import timezone
-from rest_framework import serializers
-from accounts.models import User
-from django.core.validators import validate_integer
 
+from django.core.validators import validate_integer
+from django.utils import timezone
+
+from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
+
+from accounts.models import User
 
 jwt_payload_handler             = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler              = api_settings.JWT_ENCODE_HANDLER
